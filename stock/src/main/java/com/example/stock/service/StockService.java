@@ -13,6 +13,11 @@ public class StockService {
 
   private final StockRepository stockRepository;
 
+  public Stock getStock(Long id) {
+    return stockRepository.findById(id)
+      .orElseThrow(() -> new RuntimeException("재고가 없습니다."));
+  }
+
   @Transactional
   public void decrease(Long id, Long quantity) {
     // Stock 조회
