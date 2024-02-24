@@ -31,4 +31,14 @@ public class Stock {
 
     this.quantity -= quantity;
   }
+
+  @Override
+  public String toString() {
+    final StringBuilder sb = new StringBuilder("Stock{");
+    sb.append("id=").append(id);
+    sb.append(", productId=").append(productId);
+    sb.append(", quantity=").append(quantity);
+    sb.append('}');
+    return sb.toString();
+  }
 }
