@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class StockService {
+public class SynchronizedStockService {
 
   private final StockRepository stockRepository;
 

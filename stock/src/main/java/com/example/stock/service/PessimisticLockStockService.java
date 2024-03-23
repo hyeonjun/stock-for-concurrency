@@ -12,6 +12,12 @@ public class PessimisticLockStockService {
 
   private final StockRepository stockRepository;
 
+  @Transactional(readOnly = true)
+  public Stock getStock(Long id) {
+    return stockRepository.findById(id)
+      .orElseThrow(() -> new RuntimeException("재고가 없습니다."));
+  }
+
   @Transactional
   public void decrease(long id, Long quantity) {
     Stock stock = stockRepository.findByIdForUpdate(id)
