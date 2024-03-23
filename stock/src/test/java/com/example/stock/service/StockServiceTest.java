@@ -25,6 +25,8 @@ public class StockServiceTest {
   private StockService stockService;
   @Autowired
   private StockRepository stockRepository;
+  @Autowired
+  private PessimisticLockStockService pessimisticLockStockService;
 
   private final Logger log = LoggerFactory.getLogger(StockServiceTest.class);
   private final Stock initStock = new Stock(1L, 100L);
@@ -95,6 +97,37 @@ public class StockServiceTest {
       executorService.submit(() -> {
         try {
           stockService.decreaseSynchronized(initStock.getId(), 1L);
+        } catch (Exception e) {
+          log.error(e.getMessage()); // 재고를 찾지 못하는 RuntimeException 발생
+        } finally {
+          latch.countDown();
+        }
+      });
+    }
+
+    latch.await();
+
+    Stock stock = stockService.getStock(initStock.getId());
+    log.info("stock: {}", stock);
+
+    // 100 - (1 * 100) = 0
+    assertEquals(0, stock.getQuantity());
+  }
+
+  @Test
+  public void 동시에_재고감소_100개_요청_PessimisticLock() throws InterruptedException {
+    log.info("stock id: {}, quantity: {}", initStock.getId(), initStock.getQuantity());
+
+    int threadCount = 100;
+    // 멀티스레드 이용 ExecutorService: 비동기를 단순하게 처리할 수 있도록 해주는 Java API
+    ExecutorService executorService = Executors.newFixedThreadPool(32);
+    // 다른 스레드에서 수행이 완료될 때까지 대기할 수 있도록 도와주는 API - 요청이 끝날 때까지 기다림
+    CountDownLatch latch = new CountDownLatch(threadCount);
+
+    for (int i=0; i<threadCount; i++) {
+      executorService.submit(() -> {
+        try {
+          pessimisticLockStockService.decrease(initStock.getId(), 1L);
         } catch (Exception e) {
           log.error(e.getMessage()); // 재고를 찾지 못하는 RuntimeException 발생
         } finally {
