@@ -3,7 +3,6 @@ package com.example.stock.optimistic.helper;
 import com.example.stock.optimistic.domain.StockOptimistic;
 import com.example.stock.optimistic.repository.StockOptimisticRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
