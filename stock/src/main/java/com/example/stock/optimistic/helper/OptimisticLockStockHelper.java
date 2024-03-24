@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class OptimisticLockStockHelper {
 
-  @Autowired
   private final StockOptimisticRepository stockOptimisticRepository;
 
   @Transactional
