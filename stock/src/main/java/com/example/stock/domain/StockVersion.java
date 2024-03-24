@@ -42,6 +42,7 @@ public class StockVersion {
     sb.append("id=").append(id);
     sb.append(", productId=").append(productId);
     sb.append(", quantity=").append(quantity);
+    sb.append(", version=").append(version);
     sb.append('}');
     return sb.toString();
   }
