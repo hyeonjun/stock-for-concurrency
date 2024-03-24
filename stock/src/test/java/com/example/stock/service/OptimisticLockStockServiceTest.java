@@ -25,7 +25,7 @@ import org.springframework.test.annotation.Rollback;
 public class OptimisticLockStockServiceTest {
 
   @Autowired
-  private StockOptimisticRepository stockVersionRepository;
+  private StockOptimisticRepository stockOptimisticRepository;
   @Autowired
   private OptimisticLockStockService optimisticLockStockService;
 
@@ -34,12 +34,12 @@ public class OptimisticLockStockServiceTest {
 
   @BeforeEach
   public void before() {
-    stockVersionRepository.save(initStock);
+    stockOptimisticRepository.save(initStock);
   }
 
   @AfterEach
   public void after() {
-    stockVersionRepository.deleteById(initStock.getId());
+    stockOptimisticRepository.deleteById(initStock.getId());
   }
 
   @Test
