@@ -2,8 +2,9 @@ package com.example.stock.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.example.stock.domain.Stock;
-import com.example.stock.repository.StockRepository;
+import com.example.stock.pessimistic.domain.StockPessimistic;
+import com.example.stock.pessimistic.service.PessimisticLockStockService;
+import com.example.stock.pessimistic.repository.StockPessimisticRepository;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -21,12 +22,12 @@ import org.springframework.test.annotation.Rollback;
 public class PessimisticLockStockServiceTest {
 
   @Autowired
-  private StockRepository stockRepository;
+  private StockPessimisticRepository stockRepository;
   @Autowired
   private PessimisticLockStockService pessimisticLockStockService;
 
   private final Logger log = LoggerFactory.getLogger(PessimisticLockStockServiceTest.class);
-  private final Stock initStock = new Stock(1L, 100L);
+  private final StockPessimistic initStock = new StockPessimistic(1L, 100L);
 
   @BeforeEach
   public void before() {
@@ -62,7 +63,7 @@ public class PessimisticLockStockServiceTest {
 
     latch.await();
 
-    Stock stock = pessimisticLockStockService.getStock(initStock.getId());
+    StockPessimistic stock = pessimisticLockStockService.getStock(initStock.getId());
     log.info("stock: {}", stock);
 
     // 100 - (1 * 100) = 0

@@ -1,7 +1,7 @@
-package com.example.stock.service;
+package com.example.stock.pessimistic.service;
 
-import com.example.stock.domain.Stock;
-import com.example.stock.repository.StockRepository;
+import com.example.stock.pessimistic.domain.StockPessimistic;
+import com.example.stock.pessimistic.repository.StockPessimisticRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,17 +10,17 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PessimisticLockStockService {
 
-  private final StockRepository stockRepository;
+  private final StockPessimisticRepository stockRepository;
 
   @Transactional(readOnly = true)
-  public Stock getStock(Long id) {
+  public StockPessimistic getStock(Long id) {
     return stockRepository.findById(id)
       .orElseThrow(() -> new RuntimeException("재고가 없습니다."));
   }
 
   @Transactional
   public void decrease(long id, Long quantity) {
-    Stock stock = stockRepository.findByIdForUpdate(id)
+    StockPessimistic stock = stockRepository.findByIdForUpdate(id)
       .orElseThrow(() -> new RuntimeException("재고가 없습니다."));
 
     stock.decrease(quantity);

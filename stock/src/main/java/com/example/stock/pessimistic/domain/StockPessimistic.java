@@ -1,17 +1,16 @@
-package com.example.stock.domain;
+package com.example.stock.pessimistic.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Version;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
 @Getter
-public class StockVersion {
+public class StockPessimistic {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,10 +19,7 @@ public class StockVersion {
   private Long productId;
   private Long quantity;
 
-  @Version
-  private Long version;
-
-  public StockVersion(Long productId, Long quantity) {
+  public StockPessimistic(Long productId, Long quantity) {
     this.productId = productId;
     this.quantity = quantity;
   }
@@ -38,11 +34,10 @@ public class StockVersion {
 
   @Override
   public String toString() {
-    final StringBuilder sb = new StringBuilder("StockVersion{");
+    final StringBuilder sb = new StringBuilder("StockPessimistic{");
     sb.append("id=").append(id);
     sb.append(", productId=").append(productId);
     sb.append(", quantity=").append(quantity);
-    sb.append(", version=").append(version);
     sb.append('}');
     return sb.toString();
   }

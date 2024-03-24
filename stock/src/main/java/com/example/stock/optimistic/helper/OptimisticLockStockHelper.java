@@ -1,7 +1,7 @@
-package com.example.stock.helper;
+package com.example.stock.optimistic.helper;
 
-import com.example.stock.domain.StockVersion;
-import com.example.stock.repository.StockVersionRepository;
+import com.example.stock.optimistic.domain.StockOptimistic;
+import com.example.stock.optimistic.repository.StockOptimisticRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,15 +12,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class OptimisticLockStockHelper {
 
   @Autowired
-  private final StockVersionRepository stockVersionRepository;
+  private final StockOptimisticRepository stockOptimisticRepository;
 
   @Transactional
   public void decrease(long id, Long quantity) {
-    StockVersion stock = stockVersionRepository.findByIdLock(id)
+    StockOptimistic stock = stockOptimisticRepository.findByIdLock(id)
       .orElseThrow(() -> new RuntimeException("재고가 없습니다."));
 
     stock.decrease(quantity);
-    stockVersionRepository.save(stock);
+    stockOptimisticRepository.save(stock);
   }
 
 }

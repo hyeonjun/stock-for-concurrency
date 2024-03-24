@@ -4,8 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.example.stock.domain.StockVersion;
-import com.example.stock.repository.StockVersionRepository;
+import com.example.stock.optimistic.domain.StockOptimistic;
+import com.example.stock.optimistic.repository.StockOptimisticRepository;
+import com.example.stock.optimistic.service.OptimisticLockStockService;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,12 +25,12 @@ import org.springframework.test.annotation.Rollback;
 public class OptimisticLockStockServiceTest {
 
   @Autowired
-  private StockVersionRepository stockVersionRepository;
+  private StockOptimisticRepository stockVersionRepository;
   @Autowired
   private OptimisticLockStockService optimisticLockStockService;
 
   private final Logger log = LoggerFactory.getLogger(OptimisticLockStockServiceTest.class);
-  private final StockVersion initStock = new StockVersion(1L, 100L);
+  private final StockOptimistic initStock = new StockOptimistic(1L, 100L);
 
   @BeforeEach
   public void before() {
@@ -64,7 +65,7 @@ public class OptimisticLockStockServiceTest {
 
     latch.await();
 
-    StockVersion stockVersion = optimisticLockStockService.getStock(initStock.getId());
+    StockOptimistic stockVersion = optimisticLockStockService.getStock(initStock.getId());
     log.info("stock: {}", stockVersion);
 
     assertEquals(0, stockVersion.getQuantity());
@@ -93,7 +94,7 @@ public class OptimisticLockStockServiceTest {
 
     latch.await();
 
-    StockVersion stockVersion = optimisticLockStockService.getStock(initStock.getId());
+    StockOptimistic stockVersion = optimisticLockStockService.getStock(initStock.getId());
     log.info("stock: {}", stockVersion);
 
     assertEquals(0, stockVersion.getQuantity());

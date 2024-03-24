@@ -1,7 +1,7 @@
-package com.example.stock.service;
+package com.example.stock.synchronize.service;
 
-import com.example.stock.domain.Stock;
-import com.example.stock.repository.StockRepository;
+import com.example.stock.synchronize.domain.StockSync;
+import com.example.stock.synchronize.repository.StockSyncRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,25 +10,25 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class SynchronizedStockService {
 
-  private final StockRepository stockRepository;
+  private final StockSyncRepository stockSyncRepository;
 
   @Transactional(readOnly = true)
-  public Stock getStock(Long id) {
-    return stockRepository.findById(id)
+  public StockSync getStock(Long id) {
+    return stockSyncRepository.findById(id)
       .orElseThrow(() -> new RuntimeException("재고가 없습니다."));
   }
 
   @Transactional
   public void decrease(Long id, Long quantity) {
     // Stock 조회
-    Stock stock = stockRepository.findById(id)
+    StockSync stock = stockSyncRepository.findById(id)
       .orElseThrow(() -> new RuntimeException("재고가 없습니다."));
 
     // 재고 감소
     stock.decrease(quantity);
 
     // 갱신된 값을 저장
-    stockRepository.save(stock);
+    stockSyncRepository.save(stock);
   }
 
   /**
@@ -39,14 +39,14 @@ public class SynchronizedStockService {
    */
   public synchronized void decreaseSynchronized(Long id, Long quantity) {
     // Stock 조회
-    Stock stock = stockRepository.findById(id)
+    StockSync stock = stockSyncRepository.findById(id)
       .orElseThrow(() -> new RuntimeException("재고가 없습니다."));
 
     // 재고 감소
     stock.decrease(quantity);
 
     // 갱신된 값을 저장
-    stockRepository.save(stock);
+    stockSyncRepository.save(stock);
   }
 
 }

@@ -3,8 +3,9 @@ package com.example.stock.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import com.example.stock.domain.Stock;
-import com.example.stock.repository.StockRepository;
+import com.example.stock.synchronize.domain.StockSync;
+import com.example.stock.synchronize.repository.StockSyncRepository;
+import com.example.stock.synchronize.service.SynchronizedStockService;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,12 +25,10 @@ public class SynchronizedStockServiceTest {
   @Autowired
   private SynchronizedStockService synchronizedStockService;
   @Autowired
-  private StockRepository stockRepository;
-  @Autowired
-  private PessimisticLockStockService pessimisticLockStockService;
+  private StockSyncRepository stockRepository;
 
   private final Logger log = LoggerFactory.getLogger(SynchronizedStockServiceTest.class);
-  private final Stock initStock = new Stock(1L, 100L);
+  private final StockSync initStock = new StockSync(1L, 100L);
 
   @BeforeEach
   public void before() {
@@ -46,7 +45,7 @@ public class SynchronizedStockServiceTest {
     log.info("stock id: {}, quantity: {}", initStock.getId(), initStock.getQuantity());
     synchronizedStockService.decrease(initStock.getId(), 1L);
 
-    Stock stock = synchronizedStockService.getStock(initStock.getId());
+    StockSync stock = synchronizedStockService.getStock(initStock.getId());
     log.info("{}", stock);
 
     assertEquals(99, stock.getQuantity());
@@ -76,7 +75,7 @@ public class SynchronizedStockServiceTest {
 
     latch.await();
 
-    Stock stock = synchronizedStockService.getStock(initStock.getId());
+    StockSync stock = synchronizedStockService.getStock(initStock.getId());
     log.info("stock: {}", stock);
 
     // 100 - (1 * 100) = 0
@@ -107,7 +106,7 @@ public class SynchronizedStockServiceTest {
 
     latch.await();
 
-    Stock stock = synchronizedStockService.getStock(initStock.getId());
+    StockSync stock = synchronizedStockService.getStock(initStock.getId());
     log.info("stock: {}", stock);
 
     // 100 - (1 * 100) = 0

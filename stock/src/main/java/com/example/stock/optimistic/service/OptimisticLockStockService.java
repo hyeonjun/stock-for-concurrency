@@ -1,8 +1,8 @@
-package com.example.stock.service;
+package com.example.stock.optimistic.service;
 
-import com.example.stock.domain.StockVersion;
-import com.example.stock.helper.OptimisticLockStockHelper;
-import com.example.stock.repository.StockVersionRepository;
+import com.example.stock.optimistic.domain.StockOptimistic;
+import com.example.stock.optimistic.helper.OptimisticLockStockHelper;
+import com.example.stock.optimistic.repository.StockOptimisticRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,13 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class OptimisticLockStockService {
 
-  private final StockVersionRepository stockVersionRepository;
+  private final StockOptimisticRepository stockOptimisticRepository;
   private final OptimisticLockStockHelper optimisticLockStockHelper;
   private final Logger log = LoggerFactory.getLogger(OptimisticLockStockService.class);
 
   @Transactional(readOnly = true)
-  public StockVersion getStock(Long id) {
-    return stockVersionRepository.findById(id)
+  public StockOptimistic getStock(Long id) {
+    return stockOptimisticRepository.findById(id)
       .orElseThrow(() -> new RuntimeException("재고가 없습니다."));
   }
 
