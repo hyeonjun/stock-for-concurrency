@@ -31,7 +31,7 @@ public class NamedLockStockService {
 
     try {
       stockNamedRepository.getLock(uuid);
-      namedLockStockHelper.decrease(id, quantity);
+      namedLockStockHelper.decrease(stockNamed.getId(), quantity);
     } finally {
       // 모든 로직이 종료된 후 락 해제
       stockNamedRepository.releaseLock(uuid);
