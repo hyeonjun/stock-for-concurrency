@@ -1,23 +1,20 @@
-package com.example.stock.config;
+package com.example.stock.config.datasource;
 
-import com.zaxxer.hikari.HikariDataSource;
-import java.util.HashMap;
-import java.util.Map;
-import javax.persistence.EntityManagerFactory;
+import com.example.stock.config.datasource.DatasourceProperties.DatabasePlatform;
+import com.example.stock.config.datasource.DatasourceProperties.DatabaseType;
+import com.example.stock.config.datasource.DatasourceProperties.DdlOption;
 import javax.sql.DataSource;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @EnableJpaRepositories( // JPA Repository Bean 활성화
@@ -58,8 +55,15 @@ public class DatasourceConfig {
     );
 
     HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
-    adapter.setDatabasePlatform("org.hibernate.dialect.MySQL8Dialect");
+    adapter.setDatabase(DatabaseType.MYSQL.getDatabase());
+
+    CustomJpaProperties properties = new CustomJpaProperties();
+    properties.setDdlAuto(DdlOption.CREATE);
+    properties.setDatabasePlatform(DatabasePlatform.MYSQL8);
+
     em.setJpaVendorAdapter(adapter);
+    em.setJpaProperties(properties.getJpaProperties());
+
     return em;
   }
 
@@ -69,5 +73,4 @@ public class DatasourceConfig {
   public DataSource mainDataSource() {
     return DataSourceBuilder.create().build();
   }
-
 }

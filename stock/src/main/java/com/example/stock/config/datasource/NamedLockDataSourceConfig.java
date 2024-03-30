@@ -1,5 +1,8 @@
-package com.example.stock.config;
+package com.example.stock.config.datasource;
 
+import com.example.stock.config.datasource.DatasourceProperties.DatabasePlatform;
+import com.example.stock.config.datasource.DatasourceProperties.DatabaseType;
+import com.example.stock.config.datasource.DatasourceProperties.DdlOption;
 import javax.sql.DataSource;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -34,10 +37,15 @@ public class NamedLockDataSourceConfig {
     em.setPackagesToScan("com.example.stock.named.domain");
 
     HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
-    adapter.setDatabasePlatform("org.hibernate.dialect.MySQL8Dialect");
-    adapter.setGenerateDdl(true);
-    adapter.setShowSql(true);
+    adapter.setDatabase(DatabaseType.MYSQL.getDatabase());
+
+    CustomJpaProperties properties = new CustomJpaProperties();
+    properties.setDdlAuto(DdlOption.CREATE);
+    properties.setDatabasePlatform(DatabasePlatform.MYSQL8);
+
     em.setJpaVendorAdapter(adapter);
+    em.setJpaProperties(properties.getJpaProperties());
+
     return em;
   }
 
@@ -47,7 +55,4 @@ public class NamedLockDataSourceConfig {
   public DataSource namedLockDataSource() {
     return DataSourceBuilder.create().build();
   }
-
-
-
 }
