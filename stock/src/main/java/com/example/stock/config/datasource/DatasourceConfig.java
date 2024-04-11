@@ -20,7 +20,8 @@ import org.springframework.transaction.PlatformTransactionManager;
   basePackages = { // SpringBoot 가 Bean Scan 범위 설정 (Repository 패키지 설정)
     "com.example.stock.synchronize",
     "com.example.stock.pessimistic",
-    "com.example.stock.optimistic"
+    "com.example.stock.optimistic",
+    "com.example.stock.redis.lettuce"
   },
   // DataSource, Hibernate Property, Entity 설정 (Entity 패키지 설정)
   entityManagerFactoryRef = "mainEntityManager",
@@ -50,7 +51,8 @@ public class DatasourceConfig {
     em.setPackagesToScan(
       "com.example.stock.synchronize.domain",
       "com.example.stock.pessimistic.domain",
-      "com.example.stock.optimistic.domain"
+      "com.example.stock.optimistic.domain",
+      "com.example.stock.redis.lettuce.domain"
     );
 
     HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
