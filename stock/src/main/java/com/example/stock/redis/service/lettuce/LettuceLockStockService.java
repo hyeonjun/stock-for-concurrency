@@ -1,7 +1,7 @@
-package com.example.stock.redis.lettuce.service;
+package com.example.stock.redis.service.lettuce;
 
-import com.example.stock.redis.lettuce.domain.StockRedisLettuce;
-import com.example.stock.redis.lettuce.helper.LettuceLockStockHelper;
+import com.example.stock.redis.domain.StockRedis;
+import com.example.stock.redis.helper.RedisLockStockHelper;
 import com.example.stock.redis.repository.RedisLockRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,17 +11,17 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class LettuceLockStockService {
 
-  private final LettuceLockStockHelper lettuceLockStockHelper;
+  private final RedisLockStockHelper redisLockStockHelper;
   private final RedisLockRepository redisLockRepository;
 
   @Transactional(readOnly = true)
-  public StockRedisLettuce getStock(Long id) {
-    return lettuceLockStockHelper.getStock(id)
+  public StockRedis getStock(Long id) {
+    return redisLockStockHelper.getStock(id)
       .orElseThrow(() -> new RuntimeException("재고가 없습니다."));
   }
 
   public void decrease(Long id, Long quantity) {
-    StockRedisLettuce stock = lettuceLockStockHelper
+    StockRedis stock = redisLockStockHelper
       .getStock(id)
       .orElseThrow(() -> new RuntimeException("재고가 없습니다."));
 
@@ -44,7 +44,7 @@ public class LettuceLockStockService {
     }
 
     try {
-      lettuceLockStockHelper.decrease(stock.getId(), quantity);
+      redisLockStockHelper.decrease(stock.getId(), quantity);
     } finally {
       // 로직 수행 후 unlock 메소드를 활용하여 락 해제
       redisLockRepository.unlock(stock.getUuid());

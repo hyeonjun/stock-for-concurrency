@@ -21,7 +21,7 @@ import org.springframework.transaction.PlatformTransactionManager;
     "com.example.stock.synchronize",
     "com.example.stock.pessimistic",
     "com.example.stock.optimistic",
-    "com.example.stock.redis.lettuce"
+    "com.example.stock.redis"
   },
   // DataSource, Hibernate Property, Entity 설정 (Entity 패키지 설정)
   entityManagerFactoryRef = "mainEntityManager",
@@ -52,7 +52,7 @@ public class DatasourceConfig {
       "com.example.stock.synchronize.domain",
       "com.example.stock.pessimistic.domain",
       "com.example.stock.optimistic.domain",
-      "com.example.stock.redis.lettuce.domain"
+      "com.example.stock.redis.domain"
     );
 
     HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();

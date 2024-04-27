@@ -1,17 +1,14 @@
-package com.example.stock.redis.lettuce.domain;
+package com.example.stock.redis.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
 
 @Entity
 @NoArgsConstructor
 @Getter
-public class StockRedisLettuce {
+public class StockRedis {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +19,7 @@ public class StockRedisLettuce {
   private Long productId;
   private Long quantity;
 
-  public StockRedisLettuce(String uuid, Long productId, Long quantity) {
+  public StockRedis(String uuid, Long productId, Long quantity) {
     this.uuid = uuid;
     this.productId = productId;
     this.quantity = quantity;
@@ -38,12 +35,11 @@ public class StockRedisLettuce {
 
   @Override
   public String toString() {
-    final StringBuilder sb = new StringBuilder("StockRedisLettuce{");
-    sb.append("id=").append(id);
-    sb.append(", productId=").append(productId);
-    sb.append(", quantity=").append(quantity);
-    sb.append('}');
-    return sb.toString();
+    return "StockRedis{" +
+      "id=" + id +
+      ", uuid='" + uuid + '\'' +
+      ", productId=" + productId +
+      ", quantity=" + quantity +
+      '}';
   }
 }
-

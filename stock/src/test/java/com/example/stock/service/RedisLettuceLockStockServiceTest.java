@@ -3,9 +3,9 @@ package com.example.stock.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.example.stock.redis.lettuce.domain.StockRedisLettuce;
-import com.example.stock.redis.lettuce.repository.StockRedisLettuceRepository;
-import com.example.stock.redis.lettuce.service.LettuceLockStockService;
+import com.example.stock.redis.domain.StockRedis;
+import com.example.stock.redis.repository.StockRedisRepository;
+import com.example.stock.redis.service.lettuce.LettuceLockStockService;
 import com.example.stock.util.uuid.UuidProvider;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -26,19 +26,19 @@ public class RedisLettuceLockStockServiceTest {
   @Autowired
   private LettuceLockStockService lettuceLockStockService;
   @Autowired
-  private StockRedisLettuceRepository stockRedisLettuceRepository;
+  private StockRedisRepository stockRedisRepository;
 
   private final Logger log = LoggerFactory.getLogger(RedisLettuceLockStockServiceTest.class);
-  private final StockRedisLettuce initStock = new StockRedisLettuce(UuidProvider.generateUuid(), 1L, 100L);
+  private final StockRedis initStock = new StockRedis(UuidProvider.generateUuid(), 1L, 100L);
 
   @BeforeEach
   public void before() {
-    stockRedisLettuceRepository.save(initStock);
+    stockRedisRepository.save(initStock);
   }
 
   @AfterEach
   public void after() {
-    stockRedisLettuceRepository.deleteById(initStock.getId());
+    stockRedisRepository.deleteById(initStock.getId());
   }
 
   @Test
@@ -64,10 +64,10 @@ public class RedisLettuceLockStockServiceTest {
 
     latch.await();
 
-    StockRedisLettuce stockRedisLettuce = lettuceLockStockService.getStock(initStock.getId());
-    log.info("stock: {}", stockRedisLettuce);
+    StockRedis stock = lettuceLockStockService.getStock(initStock.getId());
+    log.info("stock: {}", stock);
 
-    assertEquals(0, stockRedisLettuce.getQuantity());
+    assertEquals(0, stock.getQuantity());
   }
 
   @Test
@@ -93,10 +93,10 @@ public class RedisLettuceLockStockServiceTest {
 
     latch.await();
 
-    StockRedisLettuce stockRedisLettuce = lettuceLockStockService.getStock(initStock.getId());
-    log.info("stock: {}", stockRedisLettuce);
+    StockRedis stock = lettuceLockStockService.getStock(initStock.getId());
+    log.info("stock: {}", stock);
 
-    assertEquals(0, stockRedisLettuce.getQuantity());
+    assertEquals(0, stock.getQuantity());
 
     // 한번 더 요청하여 실패하는지 확인
     assertThrows(RuntimeException.class,
