@@ -2,6 +2,7 @@ package com.example.stock.service;
 
 import com.example.stock.redis.domain.StockRedis;
 import com.example.stock.redis.repository.StockRedisRepository;
+import com.example.stock.redis.service.redisson.RedissonAopLockStockService;
 import com.example.stock.redis.service.redisson.RedissonLockStockService;
 import com.example.stock.util.uuid.UuidProvider;
 import org.junit.jupiter.api.AfterEach;
@@ -26,6 +27,8 @@ public class RedisRedissonLockStockServiceTest {
 
   @Autowired
   private RedissonLockStockService redissonLockStockService;
+  @Autowired
+  private RedissonAopLockStockService redissonAopLockStockService;
   @Autowired
   private StockRedisRepository stockRedisRedissonRepository;
 
@@ -55,6 +58,35 @@ public class RedisRedissonLockStockServiceTest {
       executorService.submit(() -> {
         try {
           redissonLockStockService.decrease(initStock.getId(), 1L);
+        } catch (Exception e) {
+          log.error(e.getMessage());
+        } finally {
+          latch.countDown();
+        }
+      });
+    }
+
+    latch.await();
+
+    StockRedis stock = redissonLockStockService.getStock(initStock.getId());
+    log.info("stock: {}", stock);
+
+    assertEquals(0, stock.getQuantity());
+  }
+
+  @Test
+  public void 동시에_재고감소_100개_요청_RedissonAopLock() throws InterruptedException {
+    log.info("stock uuid: {}, id: {}, quantity: {}",
+      initStock.getUuid(), initStock.getId(), initStock.getQuantity());
+
+    int threadCount = 100;
+    ExecutorService executorService = Executors.newFixedThreadPool(32);
+    CountDownLatch latch = new CountDownLatch(threadCount);
+
+    for (int i=0; i<threadCount; i++) {
+      executorService.submit(() -> {
+        try {
+          redissonAopLockStockService.decrease(initStock, 1L);
         } catch (Exception e) {
           log.error(e.getMessage());
         } finally {
